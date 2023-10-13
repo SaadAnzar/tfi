@@ -19,7 +19,7 @@ const UserNav = ({ pic, logout }: Props) => {
   return (
     <div className="fixed top-0 z-20 flex h-16 w-full mb-10 bg-white shadow-xl px-5 py-2 md:px-20 md:py-4 justify-between">
       <h1 className="text-2xl font-bold tracking-tighter text-slate-900 sm:text-3xl">
-        TFI Selection App Summary
+        TFI Selection Copilot
       </h1>
       <div
         className="parent relative h-10 w-10 cursor-pointer rounded-full"
