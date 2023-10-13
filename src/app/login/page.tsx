@@ -214,7 +214,7 @@ const Login = () => {
           </div>
 
           <h1 className="text-2xl font-bold">
-            Teacher for India Selection Copilot
+            Teach For India Selection Copilot
           </h1>
           <p className="font-medium">Powered by Polymath AI</p>
         </div>
