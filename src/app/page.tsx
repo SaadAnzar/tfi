@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useReducer, useState } from 'react'
-import { Toaster, toast } from 'sonner'
 import LoadingDots from '@/components/LoadingDots'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Output from '@/components/Output'
-import { useRouter } from 'next/navigation'
-import Cookies from 'js-cookie'
 import UserNav from '@/components/ui/UserNav'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Toaster, toast } from 'sonner'
 
 const edctn = `Undergraduate College
 Anna University,Tiruchirappalli
@@ -146,10 +146,7 @@ export default function Home() {
 
   const [download, setDownload] = useState(false)
 
-  const [done1, setDone1] = useState(false)
-  const [done2, setDone2] = useState(false)
-  const [done3, setDone3] = useState(false)
-  const [done4, setDone4] = useState(false)
+  const [summaryDone, setSummaryDone] = useState(false)
 
   const [userPic, setUserPic] = useState('')
 
@@ -227,9 +224,7 @@ export default function Home() {
     return true // All input fields are filled
   }
 
-  function generatePrompts(e: any) {
-    e.preventDefault()
-
+  function generatePrompts() {
     if (!checkInput()) {
       return // Don't proceed if there are blank fields
     }
@@ -243,10 +238,10 @@ export default function Home() {
     setGeneratedPurposeSummary('')
     setGeneratedPurposeQuestions('')
 
-    generateAOSummary(e)
-    generateCourageSummary(e)
-    generateCLSummary(e)
-    generatePurposeSummary(e)
+    generateAOSummary()
+    // generateCourageSummary()
+    // generateCLSummary()
+    // generatePurposeSummary()
 
     // generateSummary(e)
     // generateQuestions(e)
@@ -281,33 +276,13 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (done1) {
+    if (summaryDone) {
       generateAOQuestions(generatedAOSummary)
-    }
-    if (done2) {
-      generateCourageQuestions(generatedCourageSummary)
-    }
-    if (done3) {
+      generateCourageQuestions(courageEssay)
       generateCLQuestions(generatedCLSummary)
-    }
-    if (done4) {
       generatePurposeQuestions(generatedPurposeSummary)
     }
-  }, [done1, done2, done3, done4])
-
-  // const generateSummary = async (e: any) => {
-  //   generateAOSummary(e)
-  //   generateCourageSummary(e)
-  //   generateCLSummary(e)
-  //   generatePurposeSummary(e)
-  // }
-
-  // const generateQuestions = async (e: any) => {
-  //   generateAOQuestions(e)
-  //   generateCourageQuestions(e)
-  //   generateCLQuestions(e)
-  //   generatePurposeQuestions(e)
-  // }
+  }, [summaryDone])
 
   const clprompt = `
   Other experiences- " ${otherExperiences} ",
@@ -375,9 +350,9 @@ Do not include the questions in the generated output. Just give the output. Do n
 Make sure all the information is presented in the correct chronological order.
    `
 
-  const generateAOSummary = async (e: any) => {
-    e.preventDefault()
-    setDone1(false)
+  const generateAOSummary = async () => {
+    setSummaryDone(false)
+    setDownload(false)
     setEditBtn(false)
     setLoading(true)
     const response = await fetch('/api/ao-summary', {
@@ -404,14 +379,12 @@ Make sure all the information is presented in the correct chronological order.
     }
     setLoading(false)
     toast.success('Generated AO Summary!')
-
-    setDone1(true)
-
-    // await generateAOQuestions(e)
-
     setEditBtn(true)
-
     setDownload(true)
+
+    await generateCourageSummary()
+    await generateCLSummary()
+    await generatePurposeSummary()
   }
 
   const generateAOQuestions = async (generatedAOSummary: any) => {
@@ -449,6 +422,8 @@ Q1. I’d like to hear more about your role – what are/were your main responsi
 Q2. You have been in this role/held this role for # months – What is expected of you in this role, and have you met these expectations? What would you say your biggest achievements during this time have been/were?
 Q3. What would you say your biggest achievements to date in your career have been?`
 
+    setDownload(false)
+
     setEditBtn(false)
     setLoading(true)
     const response = await fetch('/api/ao-questions', {
@@ -477,7 +452,6 @@ Q3. What would you say your biggest achievements to date in your career have bee
     toast.success('Generated AO Questions!')
 
     setEditBtn(true)
-
     setDownload(true)
   }
 
@@ -577,9 +551,8 @@ Wherever information is not available say "Not available". Do not add any new in
   Wherever information is not available say "Not available". Do not add any new information. Answer in brief do not make superfluous sentences.
   `
 
-  const generateCourageSummary = async (e: any) => {
-    e.preventDefault()
-    setDone2(false)
+  const generateCourageSummary = async () => {
+    setDownload(false)
     setEditBtn(false)
     const response = await fetch('/api/courage-summary', {
       method: 'POST',
@@ -602,21 +575,16 @@ Wherever information is not available say "Not available". Do not add any new in
       done = doneReading
       const chunkValue = decoder.decode(value)
       setGeneratedCourageSummary((prev) => prev + chunkValue)
-      console.log('hello')
     }
-    // setGeneratedOutput((prev) => prev + '\n\n')
 
     toast.success('Generated Courage Summary!')
 
-    setDone2(true)
-
-    // await generateCourageQuestions(e)
     setEditBtn(true)
     setDownload(true)
   }
 
-  const generateCourageQuestions = async (generatedCourageSummary: any) => {
-    const couragequestion = `This is the summary of Courage of the candiidate: ${generatedCourageSummary}\n
+  const generateCourageQuestions = async (courageEssay: string) => {
+    const couragequestion = `This is the essay of Courage part written by the candiidate: ${courageEssay}\n
     Logic-1- All non-personal commitments are any commitments that have a direct or indirect impact on the personal or professional lives of other people. These commitments can be made as an individual or as a part of a larger group. These commitments can have personal motivation, but must positively affect the lives of others.
 Based on the given logic-1, classify the above mentioned commitment as "Personal" or "Non-personal" and follow the instructions given below-
 
@@ -663,6 +631,7 @@ Q4. When did you realise keeping this commitment would be so challenging and amb
 Q5. What did you do in response to these challenges?
 Q6. Finally, tell me, what was the outcome?}`
 
+    setDownload(false)
     setEditBtn(false)
     const response = await fetch('/api/courage-questions', {
       method: 'POST',
@@ -685,9 +654,7 @@ Q6. Finally, tell me, what was the outcome?}`
       done = doneReading
       const chunkValue = decoder.decode(value)
       setGeneratedCourageQuestions((prev) => prev + chunkValue)
-      console.log('hello')
     }
-    // setGeneratedOutput((prev) => prev + '\n\n')
 
     toast.success('Generated Courage Questions!')
 
@@ -708,9 +675,8 @@ Q6. Finally, tell me, what was the outcome?}`
   
   Wherever information is not available say "Not available". Do not add any new information. Answer in brief do not make superfluous sentences.
   `
-  const generateCLSummary = async (e: any) => {
-    e.preventDefault()
-    setDone3(false)
+  const generateCLSummary = async () => {
+    setDownload(false)
     setEditBtn(false)
     const response = await fetch('/api/cl-summary', {
       method: 'POST',
@@ -733,13 +699,9 @@ Q6. Finally, tell me, what was the outcome?}`
       done = doneReading
       const chunkValue = decoder.decode(value)
       setGeneratedCLSummary((prev) => prev + chunkValue)
-      console.log('hello')
     }
-    // setGeneratedOutput((prev) => prev + '\n\n')
 
     toast.success('Generated CL Summary!')
-    setDone3(true)
-    // await generateCLQuestions(e)
     setEditBtn(true)
     setDownload(true)
   }
@@ -778,6 +740,7 @@ For "Valid" simply say "Good to go!"
 
 Do not assume anything. Do not add any new information. Do not make additional inferences.`
 
+    setDownload(false)
     setEditBtn(false)
     const response = await fetch('/api/cl-questions', {
       method: 'POST',
@@ -800,9 +763,7 @@ Do not assume anything. Do not add any new information. Do not make additional i
       done = doneReading
       const chunkValue = decoder.decode(value)
       setGeneratedCLQuestions((prev) => prev + chunkValue)
-      console.log('hello')
     }
-    // setGeneratedOutput((prev) => prev + '\n\n')
 
     toast.success('Generated CL Questions!')
 
@@ -827,9 +788,8 @@ Do not assume anything. Do not add any new information. Do not make additional i
   Wherever information is not available say "Not available". Do not add any new information. Answer in brief do not make superfluous sentences.
   
   `
-  const generatePurposeSummary = async (e: any) => {
-    e.preventDefault()
-    setDone4(false)
+  const generatePurposeSummary = async () => {
+    setDownload(false)
 
     setEditBtn(false)
     const response = await fetch('/api/purpose-summary', {
@@ -853,14 +813,11 @@ Do not assume anything. Do not add any new information. Do not make additional i
       done = doneReading
       const chunkValue = decoder.decode(value)
       setGeneratedPurposeSummary((prev) => prev + chunkValue)
-      console.log('hello')
     }
-    // setGeneratedPurposeSummary((prev) => prev + '\n\n')
 
-    // await generatePurposeQuestions(e)
     toast.success('Generated Purpose Summary!')
 
-    setDone4(true)
+    setSummaryDone(true)
 
     setEditBtn(true)
     setDownload(true)
@@ -900,6 +857,8 @@ For "Valid" simply say "Good to go!"
 
 Do not assume anything. Do not add any new information. Do not make additional inferences.`
 
+    setDownload(false)
+
     setEditBtn(false)
     const response = await fetch('/api/purpose-questions', {
       method: 'POST',
@@ -922,11 +881,8 @@ Do not assume anything. Do not add any new information. Do not make additional i
       done = doneReading
       const chunkValue = decoder.decode(value)
       setGeneratedPurposeQuestions((prev) => prev + chunkValue)
-      console.log('hello')
     }
-    // setGeneratedPurposeSummary((prev) => prev + '\n\n')
 
-    // generatePurposeQuestions(e)
     toast.success('Generated Purpose Questions!')
 
     setEditBtn(true)
@@ -1069,9 +1025,7 @@ Do not assume anything. Do not add any new information. Do not make additional i
               <div>
                 <button
                   //  disabled={isFormEmpty}
-                  onClick={(e) => {
-                    generatePrompts(e)
-                  }}
+                  onClick={generatePrompts}
                   className="mt-8 w-full rounded-md bg-black px-4 py-2 text-lg font-bold text-white hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:mt-10"
                 >
                   Generate
@@ -1097,34 +1051,22 @@ Do not assume anything. Do not add any new information. Do not make additional i
 
             <div className="tabs mt-5 flex w-full ">
               <div className="tabs mt-2 flex w-full justify-center">
-                <Tabs className="w-[100%]" defaultValue="AO">
+                <Tabs className="w-[100%]" defaultValue="Summary">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger
                       className="text-base sm:text-lg font-bold tracking-tight"
-                      value="AO"
+                      value="Summary"
                     >
-                      AO
+                      Summary
                     </TabsTrigger>
                     <TabsTrigger
                       className=" text-base sm:text-lg font-bold tracking-tight break-words"
-                      value="Courage"
+                      value="Questions"
                     >
-                      Courage
-                    </TabsTrigger>
-                    <TabsTrigger
-                      className=" text-base sm:text-lg font-bold tracking-tight break-words"
-                      value="CL"
-                    >
-                      CL
-                    </TabsTrigger>
-                    <TabsTrigger
-                      className=" text-base sm:text-lg font-bold tracking-tight break-words"
-                      value="Purpose"
-                    >
-                      Purpose
+                      Question
                     </TabsTrigger>
                   </TabsList>
-                  <TabsContent value="AO">
+                  <TabsContent value="Summary">
                     <div className="tabs mt-5 flex w-full ">
                       <div className="tabs mt-2 flex w-full justify-center">
                         <Tabs className="w-[100%]" defaultValue="AO Summary">
@@ -1137,9 +1079,21 @@ Do not assume anything. Do not add any new information. Do not make additional i
                             </TabsTrigger>
                             <TabsTrigger
                               className=" text-base sm:text-lg font-bold tracking-tight break-words"
-                              value="AO Questions"
+                              value="Courage Summary"
                             >
-                              AO Questions
+                              Courage Summary
+                            </TabsTrigger>
+                            <TabsTrigger
+                              className=" text-base sm:text-lg font-bold tracking-tight break-words"
+                              value="CL Summary"
+                            >
+                              CL Summary
+                            </TabsTrigger>
+                            <TabsTrigger
+                              className=" text-base sm:text-lg font-bold tracking-tight break-words"
+                              value="Purpose Summary"
+                            >
+                              Purpose Summary
                             </TabsTrigger>
                           </TabsList>
                           <TabsContent value="AO Summary">
@@ -1151,39 +1105,47 @@ Do not assume anything. Do not add any new information. Do not make additional i
                               edit={editBtn}
                             />
                           </TabsContent>
-                          <TabsContent value="AO Questions">
+                          <TabsContent value="Courage Summary">
                             <Output
-                              title="AO Questions"
+                              title="Courage Summary"
                               disabled={!download}
-                              output={generatedAOQuestions as string}
-                              editedOutput={setGeneratedAOQuestions}
+                              output={generatedCourageSummary as string}
+                              editedOutput={setGeneratedCourageSummary}
+                              edit={editBtn}
+                            />
+                          </TabsContent>
+                          <TabsContent value="CL Summary">
+                            <Output
+                              title="CL Summary"
+                              disabled={!download}
+                              output={generatedCLSummary as string}
+                              editedOutput={setGeneratedCLSummary}
+                              edit={editBtn}
+                            />
+                          </TabsContent>
+                          <TabsContent value="Purpose Summary">
+                            <Output
+                              title="Purpose Summary"
+                              disabled={!download}
+                              output={generatedPurposeSummary as string}
+                              editedOutput={setGeneratedPurposeSummary}
                               edit={editBtn}
                             />
                           </TabsContent>
                         </Tabs>
                       </div>
                     </div>
-                    {/* <Output
-                      title="AO"
-                      disabled={!download}
-                      output={generatedOutputAo as string}
-                      editedOutput={setGeneratedOutputAo}
-                      edit={editBtn}
-                    /> */}
                   </TabsContent>
-                  <TabsContent value="Courage">
+                  <TabsContent value="Questions">
                     <div className="tabs mt-5 flex w-full ">
                       <div className="tabs mt-2 flex w-full justify-center">
-                        <Tabs
-                          className="w-[100%]"
-                          defaultValue="Courage Summary"
-                        >
+                        <Tabs className="w-[100%]" defaultValue="AO Questions">
                           <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger
                               className="text-base sm:text-lg font-bold tracking-tight"
-                              value="Courage Summary"
+                              value="AO Questions"
                             >
-                              Courage Summary
+                              AO Questions
                             </TabsTrigger>
                             <TabsTrigger
                               className=" text-base sm:text-lg font-bold tracking-tight break-words"
@@ -1191,13 +1153,25 @@ Do not assume anything. Do not add any new information. Do not make additional i
                             >
                               Courage Questions
                             </TabsTrigger>
+                            <TabsTrigger
+                              className=" text-base sm:text-lg font-bold tracking-tight break-words"
+                              value="CL Questions"
+                            >
+                              CL Questions
+                            </TabsTrigger>
+                            <TabsTrigger
+                              className=" text-base sm:text-lg font-bold tracking-tight break-words"
+                              value="Purpose Questions"
+                            >
+                              Purpose Questions
+                            </TabsTrigger>
                           </TabsList>
-                          <TabsContent value="Courage Summary">
+                          <TabsContent value="AO Questions">
                             <Output
-                              title="Courage Summary"
+                              title="AO Questions"
                               disabled={!download}
-                              output={generatedCourageSummary as string}
-                              editedOutput={setGeneratedCourageSummary}
+                              output={generatedAOQuestions as string}
+                              editedOutput={setGeneratedAOQuestions}
                               edit={editBtn}
                             />
                           </TabsContent>
@@ -1210,91 +1184,12 @@ Do not assume anything. Do not add any new information. Do not make additional i
                               edit={editBtn}
                             />
                           </TabsContent>
-                        </Tabs>
-                      </div>
-                    </div>
-                    {/* <Output
-                      title="Courage"
-                      disabled={!download}
-                      output={generatedOutput as string}
-                      editedOutput={setGeneratedOutput}
-                      edit={editBtn}
-                    /> */}
-                  </TabsContent>
-                  <TabsContent value="CL">
-                    <div className="tabs mt-5 flex w-full ">
-                      <div className="tabs mt-2 flex w-full justify-center">
-                        <Tabs className="w-[100%]" defaultValue="CL Summary">
-                          <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger
-                              className="text-base sm:text-lg font-bold tracking-tight"
-                              value="CL Summary"
-                            >
-                              CL Summary
-                            </TabsTrigger>
-                            <TabsTrigger
-                              className=" text-base sm:text-lg font-bold tracking-tight break-words"
-                              value="CL Questions"
-                            >
-                              CL Questions
-                            </TabsTrigger>
-                          </TabsList>
-                          <TabsContent value="CL Summary">
-                            <Output
-                              title="CL Summary"
-                              disabled={!download}
-                              output={generatedCLSummary as string}
-                              editedOutput={setGeneratedCLSummary}
-                              edit={editBtn}
-                            />
-                          </TabsContent>
                           <TabsContent value="CL Questions">
                             <Output
                               title="CL Questions"
                               disabled={!download}
                               output={generatedCLQuestions as string}
                               editedOutput={setGeneratedCLQuestions}
-                              edit={editBtn}
-                            />
-                          </TabsContent>
-                        </Tabs>
-                      </div>
-                    </div>
-                    {/* <Output
-                      title="CL"
-                      disabled={!download}
-                      output={generatedOutput as string}
-                      editedOutput={setGeneratedOutput}
-                      edit={editBtn}
-                    /> */}
-                  </TabsContent>
-                  <TabsContent value="Purpose">
-                    <div className="tabs mt-5 flex w-full ">
-                      <div className="tabs mt-2 flex w-full justify-center">
-                        <Tabs
-                          className="w-[100%]"
-                          defaultValue="Purpose Summary"
-                        >
-                          <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger
-                              className="text-base sm:text-lg font-bold tracking-tight"
-                              value="Purpose Summary"
-                            >
-                              Purpose Summary
-                            </TabsTrigger>
-                            <TabsTrigger
-                              className=" text-base sm:text-lg font-bold tracking-tight break-words"
-                              value="Purpose Questions"
-                            >
-                              Purpose Questions
-                            </TabsTrigger>
-                          </TabsList>
-                          <TabsContent value="Purpose Summary">
-                            <Output
-                              title="Purpose Summary"
-                              disabled={!download}
-                              output={generatedPurposeSummary as string}
-                              editedOutput={setGeneratedPurposeSummary}
                               edit={editBtn}
                             />
                           </TabsContent>
@@ -1310,13 +1205,6 @@ Do not assume anything. Do not add any new information. Do not make additional i
                         </Tabs>
                       </div>
                     </div>
-                    {/* <Output
-                      title="Purpose"
-                      disabled={!download}
-                      output={generatedOutput as string}
-                      editedOutput={setGeneratedOutput}
-                      edit={editBtn}
-                    /> */}
                   </TabsContent>
 
                   {/* <TabsContent value="Transcript">
