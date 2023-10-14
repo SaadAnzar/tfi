@@ -1,16 +1,14 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import LoadingDots from '@/components/LoadingDots'
-import { db2, registerWithEmail, signInWithGoogle } from '@/firebase/firebase'
+import { db, signInWithGoogle } from '@/firebase/firebase'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { collection, getDocs } from 'firebase/firestore'
 import Cookies from 'js-cookie'
 import { FaCheck } from 'react-icons/fa'
 
-//login handler
 const Login = () => {
   const [accessStatus, setAccessStatus] = useState('loading')
   const [emails, setEmails] = useState<any[]>([])
@@ -20,16 +18,16 @@ const Login = () => {
   const router = useRouter()
 
   const fetchEmails = async () => {
-    const emailsRef = collection(db2, 'allowed_emails')
+    const emailsRef = collection(db, 'allowed_emails')
     const snapshot = await getDocs(emailsRef)
 
-    const emailss: any = []
+    const emails: any = []
 
     snapshot.forEach((doc) => {
-      emailss.push(doc.data().email)
+      emails.push(doc.data().email)
     })
 
-    setEmails(emailss)
+    setEmails(emails)
   }
 
   useEffect(() => {
@@ -40,27 +38,21 @@ const Login = () => {
     }
 
     fetchEmails()
-    console.log(emails)
     setPageLoading(false)
     // fetchAllowedEmails();
   }, [])
-  useEffect(() => {
-    console.log(emails)
-  }, [emails])
 
   const login = async () => {
-    console.log(emails)
+    // console.log(emails)
 
     setPageLoading(true)
-    // setAccessStatus('allowed');
     try {
       if (emails.length == 0 || null || undefined) {
-        console.log('nooo emails')
+        // console.log('nooo emails')
         fetchEmails()
       }
 
       const res: any = await signInWithGoogle()
-      console.log(res)
 
       if (res.user) {
         const user = res.user
@@ -71,8 +63,6 @@ const Login = () => {
           authProvider: 'google',
           email: user.email,
         }
-
-        console.log(userData)
 
         localStorage.setItem('users', JSON.stringify(user))
 

@@ -137,12 +137,18 @@ export default function Home() {
   const [generatedPurposeQuestions, setGeneratedPurposeQuestions] =
     useState<String>('')
 
-  const [educationDetails, setEducationDetails] = useState(edctn)
-  const [workExDetails, setWorkExDetails] = useState(workex)
-  const [otherExperiences, setOtherExperiences] = useState(otherex)
-  const [courageEssay, setCourageEssay] = useState(couressa)
-  const [clEssay, setClEssay] = useState(clessa)
-  const [purposeEssay, setPurposeEssay] = useState(prpsessay)
+  const [educationDetails, setEducationDetails] = useState('')
+  const [workExDetails, setWorkExDetails] = useState('')
+  const [otherExperiences, setOtherExperiences] = useState('')
+  const [courageEssay, setCourageEssay] = useState('')
+  const [clEssay, setClEssay] = useState('')
+  const [purposeEssay, setPurposeEssay] = useState('')
+  // const [educationDetails, setEducationDetails] = useState(edctn)
+  // const [workExDetails, setWorkExDetails] = useState(workex)
+  // const [otherExperiences, setOtherExperiences] = useState(otherex)
+  // const [courageEssay, setCourageEssay] = useState(couressa)
+  // const [clEssay, setClEssay] = useState(clessa)
+  // const [purposeEssay, setPurposeEssay] = useState(prpsessay)
 
   const [download, setDownload] = useState(false)
 
@@ -162,9 +168,9 @@ export default function Home() {
       setPageLoading(false)
 
       user = JSON.parse(userJSON)
-      console.log('check' + user.name)
+      // console.log('check' + user.name)
       setUserPic(user.photoURL)
-      console.log('okk' + user.photoURL)
+      // console.log('ok' + user.photoURL)
     } else {
       router.push('/login')
     }
@@ -196,7 +202,7 @@ export default function Home() {
     localStorage.removeItem('user')
     Cookies.set('isLoggedIn', 'false')
 
-    console.log('logout done')
+    // console.log('logout done')
 
     router.push('/login')
   }
