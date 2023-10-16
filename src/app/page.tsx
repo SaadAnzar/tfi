@@ -284,9 +284,9 @@ export default function Home() {
   useEffect(() => {
     if (summaryDone) {
       generateAOQuestions(generatedAOSummary)
-      generateCourageQuestions(courageEssay)
-      generateCLQuestions(generatedCLSummary)
-      generatePurposeQuestions(generatedPurposeSummary)
+      generateCourageQuestions()
+      generateCLQuestions()
+      generatePurposeQuestions()
     }
   }, [summaryDone])
 
@@ -393,8 +393,8 @@ Make sure all the information is presented in the correct chronological order.
     await generatePurposeSummary()
   }
 
-  const generateAOQuestions = async (generatedAOSummary: any) => {
-    const aoquestion = `This is the summary of AO of the candidate: ${generatedAOSummary}\n
+  const generateAOQuestions = async (query: String) => {
+    const aoquestion = `This is the summary of AO of the candidate: ${query}\n
     Convert the score on the scale of 1-5 if not mentioned already.
     Only generate these if the score is mentioned and is less than 3.
 
@@ -589,9 +589,8 @@ Wherever information is not available say "Not available". Do not add any new in
     setDownload(true)
   }
 
-  const generateCourageQuestions = async (courageEssay: string) => {
-    const couragequestion = `This is the essay of Courage part written by the candiidate: ${courageEssay}\n
-    Logic-1- All non-personal commitments are any commitments that have a direct or indirect impact on the personal or professional lives of other people. These commitments can be made as an individual or as a part of a larger group. These commitments can have personal motivation, but must positively affect the lives of others.
+  const couragequestion = `Courage Essay- ${courageEssay}\n
+  Logic-1- All non-personal commitments are any commitments that have a direct or indirect impact on the personal or professional lives of other people. These commitments can be made as an individual or as a part of a larger group. These commitments can have personal motivation, but must positively affect the lives of others.
 Based on the given logic-1, classify the above mentioned commitment as "Personal" or "Non-personal" and follow the instructions given below-
 
 For "Personal commitments" display the text enclosed within { }
@@ -637,6 +636,7 @@ Q4. When did you realise keeping this commitment would be so challenging and amb
 Q5. What did you do in response to these challenges?
 Q6. Finally, tell me, what was the outcome?}`
 
+  const generateCourageQuestions = async () => {
     setDownload(false)
     setEditBtn(false)
     const response = await fetch('/api/courage-questions', {
@@ -669,7 +669,6 @@ Q6. Finally, tell me, what was the outcome?}`
   }
 
   const clsummary = ` CL Essay- ${clEssay}
-
 
   From the CL Essay, Give the details in the following format-
   What are some of the areas of growth (AODs) the applicant has explicitly mentioned? Include with some context (if available)
@@ -712,9 +711,10 @@ Q6. Finally, tell me, what was the outcome?}`
     setDownload(true)
   }
 
-  const generateCLQuestions = async (generatedCLSummary: any) => {
-    const clquestion = `This is the summary of the CL of the candidate: ${generatedCLSummary}\n
-    A. "Completely invalid" response is the one where the essay does not include strengths and area of development is missing from the essay.
+  const clquestion = `CL Essay- ${clEssay}\n
+  Logic 1- Above essays are written by applicants for being a part of the Teach For India fellowship. These essays are a part of their application process. 
+Areas of development are any gaps in knowledge, skills or mindsets that are mentioned in the essays.
+  A. "Completely invalid" response is the one where the essay does not include strengths and area of development is missing from the essay.
 B. An "invalid" response is one of these 4 cases-
 i. response does not articulated any area of development at all, or 
 ii. response does not include any rationale for the area of development, or 
@@ -746,6 +746,7 @@ For "Valid" simply say "Good to go!"
 
 Do not assume anything. Do not add any new information. Do not make additional inferences.`
 
+  const generateCLQuestions = async () => {
     setDownload(false)
     setEditBtn(false)
     const response = await fetch('/api/cl-questions', {
@@ -829,40 +830,18 @@ Do not assume anything. Do not add any new information. Do not make additional i
     setDownload(true)
   }
 
-  const generatePurposeQuestions = async (generatedPurposeSummary: any) => {
-    const purposequestion = `This is the summary of the purpose of the candidate: ${generatedPurposeSummary}\n
-    A. "Completely invalid" response is the one where the essay does not include strengths and area of development is missing from the essay.
-B. An "invalid" response is one of these 4 cases-
-i. response does not articulated any area of development at all, or 
-ii. response does not include any rationale for the area of development, or 
-ii. area of development mentioned in the response is externalised (example- my community was not supportive, so I was not able to continue the project), or 
-iv. has articulated a rationale for the area of development which is not related or linked to the area of development. (example- I want to learn how to speak English fluently, because I like talking very much.)
-C. A "valid" response would contain strengths, areas of development and a clear rationale linked to the area of development.
+  const purposequestion = `Purpose Essay- ${purposeEssay}\n
+  Purpose- Does the above essay answer all the following questions clearly? If No, say "NO" for the questions it does not answer, if yes say "Yayy" and give one line answers to all the questions.
+- Why does someone want to join TFI or what excites them about TFI?
+- What change does the applicant want to make? Why?
+- Has the author explicitly addressed the issue of educational inequity in their essay, and have they provided a clear and logical explanation for their interest in this area?
 
-The above given Response Essay is expected to have strengths, areas of developments and a clear rationale for the areas of development mentioned.
-Based on Logic 1 given above, classify the above given Response Essay as "Completely Invalid", "Invalid" or "Valid", give a one line rationale for your choice, and follow the instructions given below-
+VOEE- Does the above essay answer all the following questions clearly? If No, say "NO"for the questions it does not answer, if yes say "Yayy" and give one line answers to all the questions.
+- Does the essay clearly articulate the applicant's vision of an excellent education?
+- Does the essay include both academic aspects like student grades, textbooks/syllabus, learning about a particular subject or academic competency?
+- Does the essay include any of the following non-academic aspects- values and mindsets, access and exposure, or extracurricular activities as a part of education in the essay?`
 
-For all "Completely Invalid" responses display the text enclosed within { }
-
-{"On your application form, you shared about a time when <insert summary of courage experience>. Keeping this experience in mind, tell me,
-Q1. What do you think were some of the strengths you demonstrated through this experience? These might be indicated by knowledge, skills or mindsets which likely led you to success. 
-Q2. What were some areas of development that might have held you back from being more successful or slowed your progress? These might be indicated by any gaps in your knowledge, skills or mindsets. 
-If they don't understand AOD, reiterate: These might be aspects where there might be room for improvement, knowledge/skills or mindsets which could be better.
-If the AOD seems very vague/general or not linked to the experience, ask: How would this help in <courage experience>?
-Q3. Why would you pick these as your main areas of development in this experience?
-If they don't share a rationale specific to the experience, ask: How would it have helped in this experience?"}
-
-For "Invalid" responses display the text enclosed within { }
-{Q2. What were some areas of development that might have held you back from being more successful or slowed your progress? These might be indicated by any gaps in your knowledge, skills or mindsets. 
-If they don't understand AOD, reiterate: These might be aspects where there might be room for improvement, knowledge/skills or mindsets which could be better.
-If the AOD seems very vague/general or not linked to the experience, ask: How would this help in <courage experience>?
-Q3. Why would you pick these as your main areas of development in this experience?
-If they don't share a rationale specific to the experience, ask: How would it have helped in this experience?"}
-
-For "Valid" simply say "Good to go!"
-
-Do not assume anything. Do not add any new information. Do not make additional inferences.`
-
+  const generatePurposeQuestions = async () => {
     setDownload(false)
 
     setEditBtn(false)
