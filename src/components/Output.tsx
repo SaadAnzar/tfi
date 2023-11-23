@@ -3,7 +3,7 @@ import '../app/globals.css'
 
 import { useReactToPrint } from 'react-to-print'
 import Link from 'next/link'
-import Edit from './ui/edit-btn'
+import Edit from './edit-btn'
 import CopyButton from './copy-button'
 
 interface PromptProps {

@@ -7,7 +7,6 @@ import {
   signOut,
 } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
-import { toast } from 'sonner'
 
 import firebaseConfig from './firebaseConfig'
 
@@ -34,7 +33,7 @@ const registerWithEmail = async (email: string) => {
     }
     await sendSignInLinkToEmail(auth, email, actionCodeSettings)
     window.localStorage.setItem('emailForSignIn', email)
-    toast.success('Email sent successfully')
+    console.log('Email sent successfully')
   } catch (error: any) {
     const errorCode = error.code
     const errorMessage = error.message

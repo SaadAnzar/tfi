@@ -17,9 +17,16 @@ const UserNav = ({ pic, logout }: Props) => {
   }
 
   return (
-    <div className="fixed top-0 z-20 flex h-16 w-full mb-10 bg-white shadow-xl px-5 py-2 md:px-20 md:py-4 justify-between">
-      <h1 className="text-2xl font-bold tracking-tighter text-slate-900 sm:text-3xl">
-        TFI Selection Copilot
+    <div className="fixed top-0 z-20 flex h-16 w-full mb-10 bg-white shadow-xl px-5 py-2 md:px-20 md:py-4 justify-between items-center">
+      <h1 className="text-xl font-semibold tracking-tighter text-slate-900 sm:text-3xl inline-flex justify-center items-center">
+        <Image
+          src="/logo.svg"
+          alt="logo"
+          height={200}
+          width={200}
+          className="mr-3"
+        />{' '}
+        Selection Copilot
       </h1>
       <div
         className="parent relative h-10 w-10 cursor-pointer rounded-full"

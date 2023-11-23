@@ -29,7 +29,6 @@ function CopyButton({ value, src, className, ...props }: CopyButtonProps) {
 
   return (
     <div
-      // type="button"
       className="relative inline-flex h-7 items-end justify-center font-medium text-slate-900 focus:outline-none"
       onClick={() => {
         copyToClipboard(value, {

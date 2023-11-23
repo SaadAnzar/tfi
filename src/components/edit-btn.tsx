@@ -3,15 +3,15 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip'
 
 interface EditProps {
-  isEdit: boolean;
-  editMode: boolean;
-  toggleEditMode: () => void;
-  handleEdit: () => void;
-  handleCancel: () => void;
-  handleSave: () => void;
+  isEdit: boolean
+  editMode: boolean
+  toggleEditMode: () => void
+  handleEdit: () => void
+  handleCancel: () => void
+  handleSave: () => void
 }
 
 export default function Edit({
@@ -93,5 +93,5 @@ export default function Edit({
         </div>
       )}
     </div>
-  );
+  )
 }
