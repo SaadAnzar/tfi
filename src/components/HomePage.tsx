@@ -17,9 +17,10 @@ import {
   clessay,
   purposeessay,
 } from '@/lib/data'
-import { Label } from './ui/label'
-import { Textarea } from './ui/textarea'
-import { Button } from './ui/button'
+
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
 
 const HomePage = () => {
   const [loading, setLoading] = useState(false)
@@ -57,13 +58,45 @@ const HomePage = () => {
   // const [clEssay, setClEssay] = useState(clessay)
   // const [purposeEssay, setPurposeEssay] = useState(purposeessay)
 
+  const [currentMonth, setCurrentMonth] = useState<String>('November')
+  const [currentYear, setCurrentYear] = useState<number>(2023)
+
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+
   const [download, setDownload] = useState(false)
 
   const [summaryDone, setSummaryDone] = useState(false)
 
-  const [userPic, setUserPic] = useState('')
+  const [userPic, setUserPic] = useState<string>('')
+  const [userDisplayName, setUserDisplayName] = useState<String>('')
+  const [userEmail, setUserEmail] = useState<String>('')
+  const [nameInitials, setNameInitials] = useState<String>('')
 
   const [pageLoading, setPageLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    const currentDate = new Date()
+    const month = currentDate.getMonth()
+    const year = currentDate.getFullYear()
+
+    const monthName = monthNames[month]
+
+    setCurrentMonth(monthName)
+    setCurrentYear(year)
+  }, [])
 
   useEffect(() => {
     const userJSON = localStorage.getItem('users')
@@ -75,41 +108,23 @@ const HomePage = () => {
       setPageLoading(false)
 
       user = JSON.parse(userJSON)
-      // console.log('check' + user.name)
       setUserPic(user.photoURL)
-      // console.log('ok' + user.photoURL)
+      setUserDisplayName(user.displayName)
+      setUserEmail(user.email)
+
+      const words = user.displayName.split(' ')
+
+      const initials = words.map((word: String) => word.charAt(0)).join('')
+
+      setNameInitials(initials)
     } else {
       router.push('/login')
     }
-
-    // if (userJSON) {
-    //   // User does exist, parse it
-    //   // console.log("hello" + userJSON);
-
-    //   user = JSON.parse(userJSON)
-    //   // console.log(user.pic);
-    //   setUserPic(user.pic)
-    //   setPageLoading(false)
-    //   console.log(user)
-    // } else {
-    //   // User does not exist
-    //   router.push("/login")
-
-    //   user = null
-    // }
-    // console.log(user);
-
-    // if (!user) {
-    //   console.log("nooooooo")
-    //   router.push("/login")
-    // }
   }, [])
 
   const logout = () => {
     localStorage.removeItem('user')
     Cookies.set('isLoggedIn', 'false')
-
-    // console.log('logout done')
 
     router.push('/login')
   }
@@ -205,7 +220,7 @@ Is the applicant currently working? or Have they worked before?
 Give an extractive summary in 5 sentences of the work trajectory in a chronological order. In the summary highlight the significant achievements, roles and responsibilities, and the times for the work experience.
 Does the applicant have a gap in their work experience?  If so, when were they not working? Do they have any other achievements during the gap? Answer in 2 sentences.
 
-Assume undergrad education takes 3 years and post grad degree and additional degree takes 2 years. Do not include Post grad degree, additional degree or undergraduate degree as a gap. You are in November 2023, from the information given and the assumptions- identify in which years the applicant might not have been working or not pursuing any educational programs until November 2023. Give the answer as a range.
+Assume undergrad education takes 3 years and post grad degree and additional degree takes 2 years. Do not include Post grad degree, additional degree or undergraduate degree as a gap. You are in ${currentMonth} ${currentYear}, from the information given and the assumptions- identify in which years the applicant might not have been working or not pursuing any educational programs until November 2023. Give the answer as a range.
 
 Do not include the questions in the generated output. Just give the output. Do not add any new information. Only make use of information given in the respective sections. If some information is not available say ""Not available"".
 Make sure all the information is presented in the correct chronological order.`
@@ -813,7 +828,13 @@ Give the output in the following format. ONLY give reasons with examples from th
 
   return (
     <div className="flex flex-col items-center">
-      <UserNav pic={userPic} logout={logout} />
+      <UserNav
+        pic={userPic}
+        logout={logout}
+        displayName={userDisplayName}
+        email={userEmail}
+        initials={nameInitials}
+      />
       <main className="flex w-full flex-col items-center justify-start text-center my-12">
         <Toaster
           closeButton

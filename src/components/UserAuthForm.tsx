@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react'
 
 import { collection, getDocs } from 'firebase/firestore'
 import Cookies from 'js-cookie'
-import { FaCheck } from 'react-icons/fa'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -65,7 +64,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
       if (res.user) {
         const user = res.user
-        const email = user.email
         const userData: any = {
           uid: user.uid,
           name: user.displayName,
