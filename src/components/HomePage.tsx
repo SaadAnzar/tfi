@@ -44,19 +44,19 @@ const HomePage = () => {
 
   const [generatedWriting, setGeneratedWriting] = useState<String>('')
 
-  const [educationDetails, setEducationDetails] = useState('')
-  const [workExDetails, setWorkExDetails] = useState('')
-  const [otherExperiences, setOtherExperiences] = useState('')
-  const [courageEssay, setCourageEssay] = useState('')
-  const [clEssay, setClEssay] = useState('')
-  const [purposeEssay, setPurposeEssay] = useState('')
+  // const [educationDetails, setEducationDetails] = useState('')
+  // const [workExDetails, setWorkExDetails] = useState('')
+  // const [otherExperiences, setOtherExperiences] = useState('')
+  // const [courageEssay, setCourageEssay] = useState('')
+  // const [clEssay, setClEssay] = useState('')
+  // const [purposeEssay, setPurposeEssay] = useState('')
 
-  // const [educationDetails, setEducationDetails] = useState(educationdetail)
-  // const [workExDetails, setWorkExDetails] = useState(workexperience)
-  // const [otherExperiences, setOtherExperiences] = useState(otherexperience)
-  // const [courageEssay, setCourageEssay] = useState(courageessay)
-  // const [clEssay, setClEssay] = useState(clessay)
-  // const [purposeEssay, setPurposeEssay] = useState(purposeessay)
+  const [educationDetails, setEducationDetails] = useState(educationdetail)
+  const [workExDetails, setWorkExDetails] = useState(workexperience)
+  const [otherExperiences, setOtherExperiences] = useState(otherexperience)
+  const [courageEssay, setCourageEssay] = useState(courageessay)
+  const [clEssay, setClEssay] = useState(clessay)
+  const [purposeEssay, setPurposeEssay] = useState(purposeessay)
 
   const [currentMonth, setCurrentMonth] = useState<String>('November')
   const [currentYear, setCurrentYear] = useState<number>(2023)
@@ -220,7 +220,7 @@ Is the applicant currently working? or Have they worked before?
 Give an extractive summary in 5 sentences of the work trajectory in a chronological order. In the summary highlight the significant achievements, roles and responsibilities, and the times for the work experience.
 Does the applicant have a gap in their work experience?  If so, when were they not working? Do they have any other achievements during the gap? Answer in 2 sentences.
 
-Assume undergrad education takes 3 years and post grad degree and additional degree takes 2 years. Do not include Post grad degree, additional degree or undergraduate degree as a gap. You are in ${currentMonth} ${currentYear}, from the information given and the assumptions- identify in which years the applicant might not have been working or not pursuing any educational programs until November 2023. Give the answer as a range.
+Assume undergrad education takes 3 years and post grad degree and additional degree takes 2 years. Do not include Post grad degree, additional degree or undergraduate degree as a gap. You are in ${currentMonth} ${currentYear}, from the information given and the assumptions- identify in which years the applicant might not have been working or not pursuing any educational programs until ${currentMonth} ${currentYear}. Give the answer as a range.
 
 Do not include the questions in the generated output. Just give the output. Do not add any new information. Only make use of information given in the respective sections. If some information is not available say ""Not available"".
 Make sure all the information is presented in the correct chronological order.`
@@ -975,14 +975,14 @@ Give the output in the following format. ONLY give reasons with examples from th
 
           <div className="my-8 space-y-4">
             <Button
-              className="w-full"
+              className="w-full text-lg font-semibold h-11"
               onClick={generatePrompts}
               disabled={loading}
             >
               {loading ? (
                 <LoadingDots color="white" style="large" />
               ) : (
-                <span className="text-lg font-semibold">Generate</span>
+                'Generate'
               )}
             </Button>
 
@@ -990,7 +990,7 @@ Give the output in the following format. ONLY give reasons with examples from th
               onClick={(e) => {
                 handleReset(e)
               }}
-              className="w-full text-lg font-semibold bg-slate-200 hover:bg-slate-300 text-black"
+              className="w-full h-11 text-lg font-semibold bg-slate-200 hover:bg-slate-300 text-black"
             >
               Reset
             </Button>

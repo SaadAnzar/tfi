@@ -5,6 +5,9 @@ import { useReactToPrint } from 'react-to-print'
 import Link from 'next/link'
 import Edit from './edit-btn'
 import CopyButton from './copy-button'
+import { Button } from './ui/button'
+import { Textarea } from './ui/textarea'
+import { cn } from '@/lib/utils'
 
 interface PromptProps {
   output: string
@@ -174,25 +177,16 @@ export default function Output({
   }
 
   return (
-    <div className="w-full">
-      <div className="w-full  flow-root rounded-lg border-2 border-dashed border-gray-900 px-5 py-6 text-left">
+    <div className="w-full mt-6">
+      <div className="w-full flow-root rounded-lg border-2 border-dashed border-gray-900 px-5 py-6 text-left">
         <ul role="list" className="-my-5 divide-y divide-gray-200">
           <li className="py-5">
             <div className="relative">
-              <div className="mb-3 flex items-center justify-between gap-3 text-2xl font-bold tracking-tight  text-black transition-all">
+              <div className="mb-3 flex items-center justify-between gap-3 text-2xl font-bold tracking-tight text-black transition-all">
                 <div className="flex gap-3">
-                  {' '}
                   <span>{title}</span>
-                  <CopyButton value={output} />{' '}
+                  <CopyButton value={output} />
                 </div>
-                {/* <ActionBtn
-                  editBtn={edit}
-                  editMode={editMode}
-                  toggleEditMode={toggleEditMode}
-                  handleEdit={handleEdit}
-                  handleCancel={handleCancel}
-                  handleSave={handleSave}
-                /> */}
 
                 <Edit
                   isEdit={edit}
@@ -210,17 +204,15 @@ export default function Output({
                 ref={componentRef}
               >
                 {editMode ? (
-                  <div className=" h-full w-full ">
-                    <textarea
+                  <div className="h-full w-full">
+                    <Textarea
                       autoFocus
                       ref={textareaRef}
-                      cols={100}
-                      rows={output.split('\n').length}
+                      rows={output.split('\n').length + 10}
                       value={editableContent}
-                      className={` p-4 scrollbar-hidden w-full overflow-y-scroll border-0 outline-none ring-offset-0  focus:ring-2 focus-visible:ring-black/20 `}
                       onChange={(e: any) => setEditableContent(e.target.value)}
                       disabled={!editMode}
-                    ></textarea>
+                    ></Textarea>
                   </div>
                 ) : (
                   output
@@ -230,15 +222,15 @@ export default function Output({
           </li>
         </ul>
       </div>
-      <button
+      <Button
         onClick={handlePrint}
-        className={`
-          ${!edit ? 'hidden' : 'mx-auto block'}
-          "mb-3 mt-5 rounded-md bg-black px-4 py-2 text-lg font-bold text-white hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:bg-zinc-500"
-        `}
+        className={cn(
+          'my-4 text-lg font-medium h-11',
+          !edit ? 'hidden' : 'mx-auto block'
+        )}
       >
         Download
-      </button>
+      </Button>
     </div>
   )
 }
