@@ -67,7 +67,7 @@ export default function Edit({
             <Tooltip>
               <TooltipTrigger asChild className="disabled:cursor-not-allowed">
                 <button
-                  className="h-8 p-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 !disabled:cursor-not-allowed"
+                  className="h-8 p-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={!isEdit}
                   onClick={handleEdit}
                 >
